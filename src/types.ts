@@ -41,9 +41,6 @@ export interface NavItem {
 
 export type ButtonVariant = "primary" | "ghost" | "danger" | "success";
 
-// --- Auth -----------------------------------------------------------------
-// Mirrors auth.controller.ts: POST /auth/login and /auth/signup both return
-// { user, accessToken, refreshToken } with this exact User shape.
 
 export interface AuthUser {
   id: string;
@@ -64,8 +61,10 @@ export interface LoginCredentials {
 
 export interface SignupCredentials {
   email: string;
-  password: string; // min 8 chars, enforced by the backend's signupSchema
+  password: string; 
   name: string;
 }
 
 export type AuthFormMode = "login" | "signup";
+
+

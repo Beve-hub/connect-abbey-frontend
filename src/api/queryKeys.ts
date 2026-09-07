@@ -12,4 +12,7 @@ export const queryKeys = {
     pending: ["connections", "pending"] as const,
     sent: ["connections", "sent"] as const,
   },
+  users: {
+    discover: (search: string, page: number) => ["users", "discover", search, page] as const,
+  },
 };
