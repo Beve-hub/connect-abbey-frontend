@@ -5,7 +5,7 @@ import Button from "../components/Button";
 import SectionHeading from "../components/SectionHeading";
 import { font, palette } from "../styles/theme";
 import { CURRENT_USER } from "../data/mockData";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/auth-context";
 
 function initialsFromName(name: string): string {
   const parts = name.trim().split(/\s+/);
@@ -16,11 +16,7 @@ function initialsFromName(name: string): string {
 }
 
 export default function ProfileView() {
-  // Name/email come from the authenticated session (see AuthContext).
-  // jobTitle/bio aren't part of the auth response — those live on the
-  // separate Profile model (see profile.routes.ts) — so they're mocked
-  // here as locally editable fields, seeded from CURRENT_USER.
-  const { user } = useAuth();
+const { user } = useAuth();
   const [bio, setBio] = useState(CURRENT_USER.bio);
 
   if (!user) return null;

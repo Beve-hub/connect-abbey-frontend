@@ -1,15 +1,15 @@
-import { useState, type ReactNode } from 'react'
-import ProfileView from '../views/ProfileView';
-import ConnectionsView from '../views/ConnectionsView';
-import RequestsView from '../views/RequestsView';
-import DiscoverView from '../views/DiscoverView';
-import type { TabKey } from '../types';
-import { palette, font } from '../styles/theme';
-import NavRail from './NavRail';
-import { useAuth } from '../context/AuthContext';
-import { useIsMobile } from '../hooks/useIsMobile';
-import { FiMenu } from 'react-icons/fi';
-import Logo from "../../public/Code_Generated_Image.png";
+import { useState, type ReactNode } from "react";
+import ProfileView from "../views/ProfileView";
+import ConnectionsView from "../views/ConnectionsView";
+import RequestsView from "../views/RequestsView";
+import DiscoverView from "../views/DiscoverView";
+import type { TabKey } from "../types";
+import { palette, font } from "../styles/theme";
+import NavRail from "./NavRail";
+import { useIsMobile } from "../hooks/useIsMobile";
+import { FiMenu } from "react-icons/fi";
+import Logo from "../assets/Code_Generated_Image.png";
+import { useAuth } from "../context/auth-context";
 
 const VIEWS: Record<TabKey, () => ReactNode> = {
   discover: DiscoverView,
@@ -66,11 +66,10 @@ const DashboardLayout = () => {
               </button>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <img src={Logo} alt="Abbey logo" style={{ width: 60 }} />
-                 <span style={{ fontFamily: font.body, fontSize: 16,}}>
-                Connect Abbey
-              </span>
+                <span style={{ fontFamily: font.body, fontSize: 16 }}>
+                  Connect Abbey
+                </span>
               </div>
-             
             </div>
           )}
           <div style={{ padding: isMobile ? "20px 16px" : "40px 44px" }}>

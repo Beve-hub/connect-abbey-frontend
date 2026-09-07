@@ -2,7 +2,7 @@ import { palette, font } from "../styles/theme";
 import { NAV_ITEMS } from "../data/mockData";
 import Avatar from "./Avatar";
 import type { AuthUser, TabKey } from "../types";
-import Logo from "../../public/Code_Generated_Image.png";
+import Logo from "../assets/Code_Generated_Image.png";
 import { FiLogOut, FiX } from "react-icons/fi";
 import { useIsMobile } from "../hooks/useIsMobile";
 

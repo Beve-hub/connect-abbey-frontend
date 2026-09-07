@@ -1,6 +1,3 @@
-// Domain types, deliberately shaped to match the backend's real API responses
-// (see connections.controller.ts / profile.routes.ts / auth.controller.ts)
-// so swapping mock data for real fetch calls later requires no type changes.
 
 export interface PersonSummary {
   name: string;

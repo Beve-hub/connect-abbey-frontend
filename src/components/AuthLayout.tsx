@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 import { font, palette } from '../styles/theme';
-import Logo from '../../public/white_logo.svg';
+import Logo from '../assets/white_logo.svg';
 
 interface AuthLayoutProps {
   children: ReactNode;
