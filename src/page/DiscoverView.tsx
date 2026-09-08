@@ -7,11 +7,15 @@ import Pagination from "../components/Pagination";
 import { palette, font } from "../styles/theme";
 import { FiSearch } from "react-icons/fi";
 import { useDiscoverUsers } from "../hooks/useUsers";
-import { useConnections, useSendConnectionRequest } from "../hooks/useConnections";
+import {
+  useConnections,
+  useSendConnectionRequest,
+} from "../hooks/useConnections";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { toPersonSummary } from "../types/connection.types";
 import type { DiscoverUser } from "../types/user.types";
+import PersonDetailModal from "../components/PersonDetailModal";
 
 function statusLabel(status: DiscoverUser["connectionStatus"]) {
   switch (status) {
@@ -27,22 +31,24 @@ function statusLabel(status: DiscoverUser["connectionStatus"]) {
 }
 
 export default function DiscoverView() {
-  const isMobile = useIsMobile();
+   const isMobile = useIsMobile();
   const [searchInput, setSearchInput] = useState("");
   const [page, setPage] = useState(1);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null); // moved up, order-independent anyway
   const debouncedSearch = useDebouncedValue(searchInput, 300);
 
   const { data, isLoading, isError, isFetching } = useDiscoverUsers(debouncedSearch, page);
   const sendRequest = useSendConnectionRequest();
   const { data: connectionsData, isLoading: connectionsLoading } = useConnections();
 
-  const people = data?.users ?? [];
+  const people = data?.users ?? [];              // <-- must exist before the line below
   const pagination = data?.pagination;
   const knownConnections = connectionsData?.connections ?? [];
+  const selectedFallback = people.find((p) => p.id === selectedUserId); // <-- now safe
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
-    setPage(1); // reset to page 1 whenever the search term changes
+    setPage(1);
   };
 
   return (
@@ -92,20 +98,40 @@ export default function DiscoverView() {
         </div>
 
         {isLoading && (
-          <p style={{ fontFamily: font.body, fontSize: 13, color: palette.faded }}>
+          <p
+            style={{
+              fontFamily: font.body,
+              fontSize: 13,
+              color: palette.faded,
+            }}
+          >
             Loading people…
           </p>
         )}
 
         {isError && (
-          <p style={{ fontFamily: font.body, fontSize: 13, color: palette.faded }}>
+          <p
+            style={{
+              fontFamily: font.body,
+              fontSize: 13,
+              color: palette.faded,
+            }}
+          >
             Couldn't load people. Try again.
           </p>
         )}
 
         {!isLoading && !isError && people.length === 0 && (
-          <p style={{ fontFamily: font.body, fontSize: 13, color: palette.faded }}>
-            {debouncedSearch ? `No one matches "${debouncedSearch}".` : "No one to discover yet."}
+          <p
+            style={{
+              fontFamily: font.body,
+              fontSize: 13,
+              color: palette.faded,
+            }}
+          >
+            {debouncedSearch
+              ? `No one matches "${debouncedSearch}".`
+              : "No one to discover yet."}
           </p>
         )}
 
@@ -122,12 +148,19 @@ export default function DiscoverView() {
         >
           {people.map((person) => {
             const summary = toPersonSummary(person);
-            const isSending = sendRequest.isPending && sendRequest.variables === person.id;
+            const isSending =
+              sendRequest.isPending && sendRequest.variables === person.id;
             const label = statusLabel(person.connectionStatus);
 
             return (
-              <NotchCard key={person.id}>
-                <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <NotchCard
+                key={person.id}
+                onClick={() => setSelectedUserId(person.id)}
+                style={{ cursor: "pointer" }}
+              >
+                <div
+                  style={{ display: "flex", gap: 12, alignItems: "flex-start" }}
+                >
                   <Avatar initials={summary.initials} />
                   <div style={{ minWidth: 0 }}>
                     <div
@@ -177,13 +210,15 @@ export default function DiscoverView() {
                     {label}
                   </div>
                 ) : (
-                  <Button
-                    variant="primary"
-                    disabled={isSending}
-                    onClick={() => sendRequest.mutate(person.id)}
-                  >
-                    {isSending ? "Sending…" : "Connect"}
-                  </Button>
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <Button
+                      variant="primary"
+                      disabled={isSending}
+                      onClick={() => sendRequest.mutate(person.id)}
+                    >
+                      {isSending ? "Sending…" : "Connect"}
+                    </Button>
+                  </div>
                 )}
               </NotchCard>
             );
@@ -199,6 +234,11 @@ export default function DiscoverView() {
             onPageChange={setPage}
           />
         )}
+        <PersonDetailModal
+  userId={selectedUserId}
+  fallback={selectedFallback}
+  onClose={() => setSelectedUserId(null)}
+/>
       </div>
 
       {/* Right: people you already know — 30% */}
@@ -216,13 +256,25 @@ export default function DiscoverView() {
         </div>
 
         {connectionsLoading && (
-          <p style={{ fontFamily: font.body, fontSize: 12.5, color: palette.faded }}>
+          <p
+            style={{
+              fontFamily: font.body,
+              fontSize: 12.5,
+              color: palette.faded,
+            }}
+          >
             Loading…
           </p>
         )}
 
         {!connectionsLoading && knownConnections.length === 0 && (
-          <p style={{ fontFamily: font.body, fontSize: 12.5, color: palette.faded }}>
+          <p
+            style={{
+              fontFamily: font.body,
+              fontSize: 12.5,
+              color: palette.faded,
+            }}
+          >
             You haven't connected with anyone yet.
           </p>
         )}
@@ -241,7 +293,12 @@ export default function DiscoverView() {
             return (
               <NotchCard
                 key={connection.connectionId}
-                style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px" }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "12px 14px",
+                }}
               >
                 <Avatar initials={summary.initials} size={36} />
                 <div style={{ minWidth: 0 }}>

@@ -1,16 +1,19 @@
-import type { CSSProperties, ReactNode } from "react";
+// src/components/NotchCard.tsx
+import type { CSSProperties, ReactNode, MouseEventHandler } from "react";
 import { palette } from "../styles/theme";
 
 interface NotchCardProps {
   children: ReactNode;
   style?: CSSProperties;
   className?: string;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
-export default function NotchCard({ children, style, className = "" }: NotchCardProps) {
+export default function NotchCard({ children, style, className = "", onClick }: NotchCardProps) {
   return (
     <div
       className={className}
+      onClick={onClick}
       style={{
         position: "relative",
         background: palette.card,

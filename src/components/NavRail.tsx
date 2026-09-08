@@ -1,14 +1,13 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import { palette, font } from "../styles/theme";
 import { NAV_ITEMS } from "../data/mockData";
 import Avatar from "./Avatar";
-import type { AuthUser, TabKey } from "../types";
+import type { AuthUser } from "../types";
 import Logo from "../assets/Code_Generated_Image.png";
 import { FiLogOut, FiX } from "react-icons/fi";
 import { useIsMobile } from "../hooks/useIsMobile";
 
 interface NavRailProps {
-  activeTab: TabKey;
-  onSelect: (tab: TabKey) => void;
   user: AuthUser;
   onLogout: () => void;
   isOpen: boolean;
@@ -23,15 +22,10 @@ function initialsFromName(name: string): string {
     .join("");
 }
 
-export default function NavRail({
-  activeTab,
-  onSelect,
-  user,
-  onLogout,
-  isOpen,
-  onClose,
-}: NavRailProps) {
+export default function NavRail({ user, onLogout, isOpen, onClose }: NavRailProps) {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <>
@@ -123,12 +117,13 @@ export default function NavRail({
           </div>
 
           {NAV_ITEMS.map((item) => {
-            const active = activeTab === item.key;
+            // matches /dashboard/discover, /dashboard/profile/edit, etc.
+            const active = location.pathname.startsWith(`/dashboard/${item.key}`);
             return (
               <button
                 key={item.key}
                 onClick={() => {
-                  onSelect(item.key);
+                  navigate(`/dashboard/${item.key}`);
                   if (isMobile) onClose();
                 }}
                 style={{

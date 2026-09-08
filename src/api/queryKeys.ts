@@ -13,6 +13,8 @@ export const queryKeys = {
     sent: ["connections", "sent"] as const,
   },
   users: {
-    discover: (search: string, page: number) => ["users", "discover", search, page] as const,
+    discover: (search: string, page: number) =>
+      ["users", "discover", search, page] as const,
+    detail: (id: string) => ["users", "detail", id] as const,
   },
 };

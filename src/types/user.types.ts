@@ -23,3 +23,17 @@ export interface DiscoverUsersResponse {
   users: DiscoverUser[];
   pagination: Pagination;
 }
+
+export interface UserDetail {
+  id: string;
+  name: string;
+  createdAt?: string;
+  profile?: {
+    jobTitle?: string | null;
+    bio?: string | null;
+  } | null;
+}
+
+export interface UserDetailResponse {
+  user: UserDetail;
+}
